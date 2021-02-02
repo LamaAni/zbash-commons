@@ -101,8 +101,6 @@ if [ "$(whoami)" != "root" ]; then
   else
     assert 2 "Sudo found, please rerun as root" || exit $?
   fi
-else
-  log "Running as root"
 fi
 
 HELP="
@@ -137,6 +135,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 : "${ZBASH_COMMONS_BRANCH:="master"}"
+: "${ZBASH_COMMONS_SOURCE_COMMAND_LOCATION:="/usr/bin/zbash_commons"}"
 : "${ZBASH_COMMONS_INSTALL_LOCATION:="/lib/zbash-commons"}"
 
 type realapth >/dev/null 2>&1
@@ -155,16 +154,30 @@ assert $? "Git must be installed" || exit $?
 
 log "Cloning the remote repo"
 REPO_URI="https://github.com/LamaAni/zbash-commons.git"
+
+if [ -d "$ZBASH_COMMONS_INSTALL_LOCATION" ]; then
+  log "Removing old install"
+  rm -rf "$ZBASH_COMMONS_INSTALL_LOCATION"
+  assert $? "Failed to remove old install @ $ZBASH_COMMONS_INSTALL_LOCATION" || exit $?
+fi
+
 git clone --single-branch -b "$ZBASH_COMMONS_BRANCH" "$REPO_URI" "$ZBASH_COMMONS_INSTALL_LOCATION"
 assert $? "Failed to clone $REPO_URI $ZBASH_COMMONS_BRANCH into $ZBASH_COMMONS_INSTALL_LOCATION" || exit $?
 
-log "Creating the bin command @ /usr/bin/zbash_commons"
-ln -sf "$ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh" "/usr/bin/zbash_commons"
-assert $? "Failed to link $ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh -> /usr/bin/zbash_commons" || exit $?
+log "Creating the bin command @ $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
+if [ -f "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" ]; then
+  rm -rf "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
+  assert $? "Failed to remove old $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" || exit $?
+fi
+echo "#!/bin/bash
+source $ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh
+exit $?
+" >"$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" && chmod +x "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
+assert $? "Failed to create $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" || exit $?
 
 echo "
 
-Library installed. To use add the following in the head of your script,
+Library installed. To use, add the following at the head of your script,
 
 #!/bin/bash
 source zbash_commons || echo \"zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions\" || exit \$?
