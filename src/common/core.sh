@@ -1,5 +1,5 @@
 #!/bin/bash
-: "${LOG_DISPLAY_DATE_TIME="%F %T"}"
+: "${LOG_DISPLAY_DATE_TIME="%Y-%m-%dT%H:%M:%S%z"}"
 function log_core() {
   local prefix="$1"
   shift
