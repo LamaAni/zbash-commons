@@ -15,3 +15,9 @@ At the head of your script add,
 #!/bin/bash
 source zbash_commons || echo "zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions" && exit 1
 ```
+
+# Licence
+
+Copyright ©
+`Zav Shotan` and other [contributors](../graphs/contributors).
+It is free software, released under the MIT licence, and may be redistributed under the terms specified in [LICENSE](LICENSE).
