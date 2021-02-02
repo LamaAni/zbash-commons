@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "lama"
+source "$(which zbash_commons)" || exit $?
+
+echo "lama"
+log "lama"
