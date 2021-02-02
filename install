@@ -174,11 +174,11 @@ source $ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh || exit \$?
 " >"$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" && chmod +x "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
 assert $? "Failed to create $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" || exit $?
 
-echo "
+echo '
 
 Library installed. To use, add the following at the head of your script,
 
 #!/bin/bash
-source zbash_commons || echo \"zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions\" || exit \$?
+source zbash_commons || echo "zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions" && exit 1
 
-"
+'
