@@ -154,9 +154,9 @@ type git >/dev/null 2>&1
 assert $? "Git must be installed" || exit $?
 
 log "Cloning the remote repo"
-REPO_URI="https://github.com/LamaAni/zbash-commons@$ZBASH_COMMONS_BRANCH"
-git clone "$REPO_URI" "$ZBASH_COMMONS_INSTALL_LOCATION"
-assert $? "Failed to clone $REPO_URI into $ZBASH_COMMONS_INSTALL_LOCATION" || exit $?
+REPO_URI="https://github.com/LamaAni/zbash-commons.git"
+git clone --single-branch -b "$ZBASH_COMMONS_BRANCH" "$REPO_URI" "$ZBASH_COMMONS_INSTALL_LOCATION"
+assert $? "Failed to clone $REPO_URI $ZBASH_COMMONS_BRANCH into $ZBASH_COMMONS_INSTALL_LOCATION" || exit $?
 
 log "Creating the bin command @ /usr/bin/zbash_commons"
 ln -sf "$ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh" "/usr/bin/zbash_commons"
