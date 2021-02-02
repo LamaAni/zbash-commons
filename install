@@ -97,11 +97,9 @@ if [ "$(whoami)" != "root" ]; then
   log "checking if sudo is available..."
   type sudo >/dev/null 2>&1
   if [ $? -ne 0 ]; then
-    log "Sudo not found. Attempting to install with user $(whoami)"
+    warn 2 "Sudo not found. Attempting to install with user $(whoami)"
   else
-    log "Sudo found, rerunning as root."
-    sudo "${BASH_SOURCE[0]}" "$@"
-    exit $?
+    assert 2 "Sudo found, please rerun as root" || exit $?
   fi
 else
   log "Running as root"
