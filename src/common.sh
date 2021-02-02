@@ -1,6 +1,6 @@
 #!/bin/bash
 : "${ZBASH_COMMONS_SCRIPTS_PATH:="$(dirname "${BASH_SOURCE[0]}")"}"
-echo "$ZBASH_COMMONS_SCRIPTS_PATH"
+echo "lama"
 source "$ZBASH_COMMONS_SCRIPTS_PATH/common/core.sh" || exit $?
 
 ZBASH_COMMONS_SCRIPTS_PATH="$(realpath "$ZBASH_COMMONS_SCRIPTS_PATH")"
