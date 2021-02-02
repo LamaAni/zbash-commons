@@ -112,9 +112,6 @@ ARGS:
   -l --location   The install location (default: /lib/zbash-commons)
 "
 
-: "${ZBASH_COMMONS_BRANCH:=""}"
-: "${ZBASH_COMMONS_INSTALL_LOCATION:="/lib/zbash-commons"}"
-
 while [ "$#" -gt 0 ]; do
   case $1 in
   -h | --help)
@@ -138,6 +135,9 @@ while [ "$#" -gt 0 ]; do
   esac
   shift
 done
+
+: "${ZBASH_COMMONS_BRANCH:="master"}"
+: "${ZBASH_COMMONS_INSTALL_LOCATION:="/lib/zbash-commons"}"
 
 type realapth >/dev/null 2>&1
 if [ $? -eq 0 ]; then
