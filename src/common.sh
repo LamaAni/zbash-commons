@@ -1,7 +1,20 @@
 #!/bin/bash
 : "${ZBASH_COMMONS_SCRIPTS_PATH:="$(dirname "${BASH_SOURCE[0]}")"}"
-echo "$ZBASH_COMMONS_SCRIPTS_PATH"
-source "$ZBASH_COMMONS_SCRIPTS_PATH/common/core.sh" || exit $?
+
+function load_core_scripts() {
+  source "$ZBASH_COMMONS_SCRIPTS_PATH/common/core.sh"
+  if [ code -ne 0 ]; then
+    echo "Error loading core scripts"
+    return $?
+  fi
+}
+
+function load_scripts() {
+  for file in $ZBASH_COMMONS_SCRIPTS_PATH/common/*; do
+    source "$file"
+    assert $? "Error while loading lib file: $file" || exit $?
+  done
+}
 
 ZBASH_COMMONS_SCRIPTS_PATH="$(realpath "$ZBASH_COMMONS_SCRIPTS_PATH")"
 export ZBASH_COMMONS_SCRIPTS_PATH
@@ -9,9 +22,4 @@ export ZBASH_COMMONS_SCRIPTS_PATH
 # -----------------------
 # Loading
 
-for file in $ZBASH_COMMONS_SCRIPTS_PATH/common/*; do
-  source "$file"
-  assert $? "Error while loading lib file: $file" || exit $?
-done
-
-export ZBASH_COMMONS_SCRIPTS_PATH
+load_core_scripts && load_scripts
