@@ -13,7 +13,7 @@ curl -Ls "https://raw.githubusercontent.com/LamaAni/zbash-commons/master/install
 At the head of your script add,
 ```shell
 #!/bin/bash
-source zbash_commons || echo "zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions" && exit 1
+source zbash_commons
 ```
 
 # Licence
