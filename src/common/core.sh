@@ -77,7 +77,7 @@ function log:sep() {
 }
 
 function is_interactive_shell() {
-  "$(dirname "${BASH_SOURCE[0]}")/commands/detect_interactive_shell"
+  "$(dirname "${BASH_SOURCE[0]}")/../commands/detect_interactive_shell"
 }
 
 function is_command() {
