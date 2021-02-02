@@ -1,0 +1,174 @@
+#!/bin/bash
+export red=$'\e[0;31m'
+export green=$'\e[0;32m'
+export yellow=$'\e[0;33m'
+export blue=$'\e[0;34m'
+export magenta=$'\e[0;35m'
+export cyan=$'\e[0;36m'
+export light_blue=$'\e[0;94m'
+export deep_green=$'\e[0;32m'
+export dark_magenta=$'\e[0;35m'
+export light_=$'\e[1;31m'
+export end_color=$'\e[0m'
+export ec="$end_color"
+
+: "${LOG_DISPLAY_DATE_TIME="%F %T"}"
+function log_core() {
+  local prefix="$1"
+  shift
+  if [ -n "$prefix" ]; then
+    prefix="[$prefix]"
+  fi
+  if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
+    prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]$prefix"
+  fi
+  echo "${prefix}" "$@"
+}
+
+# ------------------
+
+function assert() {
+  local err="$1"
+  shift
+  : ${err:=0}
+  if [ "$err" -ne 0 ]; then
+    log_core "${red}ERROR${end_color}" "$@" 1>&2
+    return $err
+  fi
+}
+
+function assert_warning() {
+  local err="$1"
+  shift
+  : ${err:=0}
+  if [ "$err" -ne 0 ]; then
+    log_core "${yellow}WARNING${end_color}" "$@" 1>&2
+    return $err
+  fi
+}
+
+function warn() {
+  assert_warning "$@"
+  return $?
+}
+
+# ------------------
+
+export LINE_SEPARATOR='------------------------------------'
+
+function log:info() {
+  log_core "${green}INFO${end_color}" "$@"
+}
+
+function log:warn() {
+  log_core "${yellow}WARNING${end_color}" "$@"
+}
+
+function log:error() {
+  log_core "${red}ERROR${end_color}" "$@"
+}
+
+function log:trace() {
+  log_core "${magenta}TRACE${end_color}" "$@"
+}
+
+function log() {
+  log:info "$@"
+}
+
+function log:warning() {
+  log:warn "$@"
+}
+
+: "${LINE_SEPARATOR:="----------------------------"}"
+
+function log:sep() {
+  echo "$green$LINE_SEPARATOR$end_color"
+  if [ "$#" -gt 0 ]; then
+    echo "${magenta}->${end_color}" "$@"
+  fi
+}
+
+# ------------------
+
+log:sep "Installing zbash-commons as $(whoami)"
+log "Checking required premissions"
+if [ "$(whoami)" != "root" ]; then
+  log "checking if sudo is available..."
+  type sudo >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    log "Sudo not found. Attempting to install with user $(whoami)"
+  else
+    log "Sudo found, rerunning as root."
+    sudo "${BASH_SOURCE[0]}" "$@"
+    exit $?
+  fi
+else
+  log "Running as root"
+fi
+
+HELP="
+Installs the zbash-commons library
+USAGE: Install [branch]
+ARGS:
+  -l --location   The install location (default: /lib/zbash-commons)
+"
+
+: "${ZBASH_COMMONS_BRANCH:=""}"
+: "${ZBASH_COMMONS_INSTALL_LOCATION:="/lib/zbash-commons"}"
+
+while [ "$#" -gt 0 ]; do
+  case $1 in
+  -h | --help)
+    echo "$HELP"
+    exit 0
+    ;;
+  -l | --location)
+    shift
+    ZBASH_COMMONS_INSTALL_LOCATION="$1"
+    ;;
+  -*)
+    assert 2 "Invalid argument: $1"
+    ;;
+  *)
+    if [ -z "$ZBASH_COMMONS_BRANCH" ]; then
+      ZBASH_COMMONS_BRANCH="$1"
+    else
+      assert 2 "Unknown input: $1"
+    fi
+    ;;
+  esac
+  shift
+done
+
+type realapth >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+  ZBASH_COMMONS_INSTALL_LOCATION="$(realpath "$ZBASH_COMMONS_INSTALL_LOCATION")"
+fi
+case "$ZBASH_COMMONS_INSTALL_LOCATION" in
+/*) ;;
+*)
+  assert 2 "$ZBASH_COMMONS_INSTALL_LOCATION must be an absolute path (starts with /)" $
+  ;;
+esac
+
+type git >/dev/null 2>&1
+assert $? "Git must be installed" || exit $?
+
+log "Cloning the remote repo"
+REPO_URI="https://github.com/LamaAni/zbash-commons@$ZBASH_COMMONS_BRANCH"
+git clone "$REPO_URI" "$ZBASH_COMMONS_INSTALL_LOCATION"
+assert $? "Failed to clone $REPO_URI into $ZBASH_COMMONS_INSTALL_LOCATION" || exit $?
+
+log "Creating the bin command @ /usr/bin/zbash_commons"
+ln -sf "$ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh" "/usr/bin/zbash_commons"
+assert $? "Failed to link $ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh -> /usr/bin/zbash_commons" || exit $?
+
+echo "
+
+Library installed. To use add the following in the head of your script,
+
+#!/bin/bash
+source zbash_commons || echo \"zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions\" || exit \$?
+
+"
