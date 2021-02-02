@@ -3,8 +3,8 @@
 
 function load_core_scripts() {
   source "$ZBASH_COMMONS_SCRIPTS_PATH/common/core.sh"
-  if [ code -ne 0 ]; then
-    echo "Error loading core scripts"
+  if [ $code -ne 0 ]; then
+    echo "zbash-commons: Error loading core script."
     return $?
   fi
 }
