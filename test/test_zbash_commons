@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "lama"
-source "$(which zbash_commons)" || exit $?
+source "zbash_commons" || echo "error while loading $?" && exit 1
 
 echo "lama"
 log "lama"
