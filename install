@@ -179,6 +179,10 @@ echo '
 Library installed. To use, add the following at the head of your script,
 
 #!/bin/bash
-source zbash_commons || echo "zbash_commons not found. See https://github.com/LamaAni/zbash-commons for install instructions" && exit 1
+source zbash_commons
+if [ $? -ne 0 ]; then
+  echo "zbash_commons not found. Please see: https://github.com/LamaAni/zbash-commons"
+fi
+
 
 '

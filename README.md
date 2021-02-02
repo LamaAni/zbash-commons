@@ -14,6 +14,10 @@ At the head of your script add,
 ```shell
 #!/bin/bash
 source zbash_commons
+if [ $? -ne 0 ]; then
+  echo "zbash_commons not found. Please see: https://github.com/LamaAni/zbash-commons"
+fi
+
 ```
 
 # Licence
