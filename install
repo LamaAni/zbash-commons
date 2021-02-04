@@ -53,7 +53,7 @@ GET_SCRIPT_TEMP_PATH="$(mktemp /tmp/get-zbash-commons-script-XXXX.sh)"
 ZBASH_COMMONS_TEMP_PATH="$(mktemp /tmp/zbash-commpns-script-XXXX.sh)"
 
 function install() {
-  curl -sL "https://raw.githubusercontent.com/LamaAni/zbash-commons/$ZBASH_COMMONS_VERSION/get" >"$GET_SCRIPT_TEMP_PATH"
+  curl -sL "https://raw.githubusercontent.com/LamaAni/zbash-commons/$ZBASH_COMMONS_VERSION/get?v_$(date +"%S")=$RANDOM" >"$GET_SCRIPT_TEMP_PATH"
   assert $? "Failed to download script getter" || return $?
   cat "$GET_SCRIPT_TEMP_PATH"
   bash "$GET_SCRIPT_TEMP_PATH" -s -- "$ZBASH_COMMONS_VERSION" >"$ZBASH_COMMONS_TEMP_PATH"
