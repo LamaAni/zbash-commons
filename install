@@ -170,7 +170,7 @@ if [ -f "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" ]; then
   assert $? "Failed to remove old $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" || exit $?
 fi
 echo "#!/bin/bash
-source $ZBASH_COMMONS_INSTALL_LOCATION/src/common.sh || exit \$?
+source $ZBASH_COMMONS_INSTALL_LOCATION/src/load || exit \$?
 " >"$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" && chmod +x "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
 assert $? "Failed to create $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" || exit $?
 
