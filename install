@@ -44,19 +44,21 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-: "${ZBASH_COMMONS_VERSION:="master"}"
+: "${ZBASH_COMMONS_VERSION:="latest"}"
 : "${ZBASH_COMMONS_SOURCE_COMMAND_LOCATION:="/usr/bin/zbash_commons"}"
 
 # ------------------
 
-GET_SCRIPT_TEMP_PATH="$(mktemp /tmp/get-zbash-commons-script-XXXX.sh)"
 ZBASH_COMMONS_TEMP_PATH="$(mktemp /tmp/zbash-commpns-script-XXXX.sh)"
 
 function install() {
-  curl -sL "https://raw.githubusercontent.com/LamaAni/zbash-commons/$ZBASH_COMMONS_VERSION/get?v_$(date +"%S")=$RANDOM" >"$GET_SCRIPT_TEMP_PATH"
-  assert $? "Failed to download script getter" || return $?
-  cat "$GET_SCRIPT_TEMP_PATH"
-  bash "$GET_SCRIPT_TEMP_PATH" -s -- "$ZBASH_COMMONS_VERSION" >"$ZBASH_COMMONS_TEMP_PATH"
+  URL_BRANCH="$ZBASH_COMMONS_VERSION"
+  if [ "$URL_BRANCH" == "latest" ]; then
+    URL_BRANCH="master"
+  fi
+  GET_SCRIPT_URL="https://raw.githubusercontent.com/LamaAni/zbash-commons/$URL_BRANCH/get?v_$(date +"%S")=$RANDOM"
+  echo "$GET_SCRIPT_URL"
+  curl -sL "$GET_SCRIPT_URL" | bash -s "$ZBASH_COMMONS_VERSION" >"$ZBASH_COMMONS_TEMP_PATH"
   assert $? "Failed to download zbash_commons compiled script" || return $?
 
   source "$ZBASH_COMMONS_TEMP_PATH"

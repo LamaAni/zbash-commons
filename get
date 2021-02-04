@@ -2,9 +2,11 @@
 # https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh
 # https://github.com/LamaAni/zbash-commons/releases/download/[VERSION]/zbash_commons.sh
 VERSION="$1"
+: "${VERSION:="latest"}"
+
 URL="https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh?v_$(date +"%S")=$RANDOM"
 
-if [ -n "$VERSION" ]; then
+if [ "$VERSION" != "latest" ]; then
     URL="https://github.com/LamaAni/zbash-commons/releases/download/$VERSION/zbash_commons.sh?v_$(date +"%S")=$RANDOM"
 fi
 
