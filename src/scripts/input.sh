@@ -1,12 +1,19 @@
 #!/bin/bash
 function read_from_pipe() {
-  # checking first line.
+  : "
+Read from pipe if exists.
+USAGE: read_from_pipe
+"
   read -t 1 -s first_line || return $?
   echo "$first_line"
   while read line; do echo "$line"; done
 }
 
 function get_input() {
+  : "
+Gets input from the user
+USAGE: get_input [question] [default]
+"
   local question="$1"
   local default="$2"
   printf "%s" "${magenta}QUESTION:${end_color} $question [$default]: "
@@ -19,6 +26,10 @@ function get_input() {
 }
 
 function get_menu_value() {
+  : "
+Return a menu value from a list of options.
+USAGE: get_input [question] [values...]
+"
   local question="$1"
   shift
   local vals=($@)
@@ -37,6 +48,10 @@ function get_menu_value() {
 }
 
 function get_yes_no() {
+  : "
+Asks a yes no question. Returns 1 if yes.
+USAGE: get_yes_no [question]
+"
   while true; do
     printf "%s" "${magenta}QUESTION:${end_color} $1 [y/n]: "
     read -n 1 -r
@@ -58,6 +73,10 @@ function get_yes_no() {
 }
 
 function validate_arg() {
+  : "
+Validates a value is not empty (with trim)
+USAGE: validate_arg [value]
+"
   local value=$(trim "${!1}")
   if [ -z "$value" ]; then
     return 2

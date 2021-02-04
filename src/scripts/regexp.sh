@@ -1,5 +1,9 @@
 #!/bin/bash
 function regexp_replace() {
+  : "
+Does a regex replace. (May use python or nodejs if found)
+USAGE: regexp_replace [regex] [replace_with] [value] [is_singleline==false]
+"
   type "node" &>>/dev/null
   local dose_not_have_node=$?
   type "python3" &>>/dev/null
@@ -40,6 +44,10 @@ print(re.sub(regex, replace, value$flags))
 }
 
 function regexp_match() {
+  : "
+Does a regex match using grep
+USAGE: regexp_match [regex] [vals ...]
+"
   local regex="$1"
   shift
   while [ "$#" -gt 0 ]; do

@@ -15,12 +15,6 @@ function log_core() {
   echo "${prefix}" "$@"
 }
 
-function format_level_prefix() {
-  local prefix="$1"
-  local color="$2"
-
-}
-
 function log_level_name_to_number() {
   case "$1" in
   0 | TRACE)
@@ -96,15 +90,20 @@ function log_with_level() {
 # ------------------
 
 function assert() {
-  local err="$1"
+  : "
+Assert an code, if > 0, then log:error, returns the code.
+USAGE: assert [code|\$?] [message...] -> code
+"
+  local code="$1"
   shift
-  : "${err:=0}"
-  if [ "$err" -ne 0 ]; then
+  : "${code:=0}"
+  if [ "$code" -ne 0 ]; then
     log:error "$@"
-    return $err
+    return $code
   fi
 }
 
+# deprecated
 function assert_warning() {
   local err="$1"
   shift
@@ -116,6 +115,10 @@ function assert_warning() {
 }
 
 function warn() {
+  : "
+Assert an code, if > 0, then log:warn the message, returns the code.
+USAGE: assert [code|\$?] [message...] -> code
+"
   assert_warning "$@"
   return $?
 }
@@ -124,31 +127,59 @@ function warn() {
 
 export LINE_SEPARATOR='------------------------------------'
 
+function log:debug() {
+  : "
+Log a message to level: DEBUG
+USAGE: log:debug [message...]
+"
+  log_with_level "DEBUG" "$@"
+}
+
+function log:trace() {
+  : "
+Log a message to level: TRACE
+USAGE: log:trace [message...]
+"
+  log_with_level "TRACE" "$@"
+}
+
 function log:info() {
+  : "
+Log a message to level: INFO
+USAGE: log:info [message...]
+"
   log_with_level "INFO" "$@"
 }
 
 function log:warn() {
+  : "
+Log a message to level: WARN
+USAGE: log:warn [message...]
+"
   log_with_level "WARN" "$@"
 }
 
 function log:error() {
+  : "
+Log a message to level: ERROR
+USAGE: log:error [message...]
+"
   log_with_level "ERROR" "$@"
 }
 
-function log:trace() {
-  log_with_level "TRACE" "$@"
-}
-
-function log:debug() {
-  log_with_level "DEBUG" "$@"
-}
-
 function log:critical() {
+  : "
+Log a message to level: ERROR
+USAGE: log:critical [message...]
+"
   log_with_level "CRITICAL" "$@"
 }
 
 function log() {
+  : "
+Log a message to level: INFO
+USAGE: log:info [message...]
+"
   log:info "$@"
 }
 
@@ -160,6 +191,10 @@ function log:warning() {
 : "${LINE_SEPARATOR:="----------------------------"}"
 
 function log:sep() {
+  : "
+Output a seperator for nicer logging. (Dose not have)
+USAGE: log:sep [message...]
+"
   echo "$green$LINE_SEPARATOR$end_color"
   if [ "$#" -gt 0 ]; then
     echo "${magenta}->${end_color}" "$@"
@@ -167,6 +202,10 @@ function log:sep() {
 }
 
 function is_interactive_shell() {
+  : "
+Returns 1 if its an interactive shell
+USAGE: is_interactive_shell
+"
   if [ -t 0 ]; then
     return 0
   else
@@ -175,6 +214,10 @@ function is_interactive_shell() {
 }
 
 function is_command() {
+  : "
+Echo true if a command is defined. To be used in if
+USAGE: is_command command
+"
   type "$1" &>/dev/null
   if [ $? -eq 0 ]; then
     echo "true"
@@ -185,6 +228,10 @@ function is_command() {
 }
 
 function check_access() {
+  : "
+Checks access to a file or folder.
+USAGE: check_access [file or folder]
+"
   [ -r "$1" ] && [ -w "$1" ] && return 0 || return 1
 }
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 function log:help() {
+  : "
+Create colorized help
+USAGE: log:help [help text ...]
+"
   echo
   local help_text=""
   help_text="$@"

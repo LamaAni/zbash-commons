@@ -1,5 +1,9 @@
 #!/bin/bash
 function replace_with_env() {
+  : "
+Replaces values inside a text with matching env valus (similar to python format), e.g. \"{{ENV}}\" -> \"Env_val\"
+USAGE: replace_with_env [text]
+"
   # replace any {{ENV_NAME}} with its respective env value.
   value="$1"
 
@@ -17,11 +21,19 @@ function replace_with_env() {
 }
 
 function to_lowercase() {
+  : "
+Makes a text lowercase
+USAGE: to_lowercase [text]
+"
   local text="$1"
   echo "${text,,}"
 }
 
 function trim() {
+  : "
+Trim a text
+USAGE: trim [text]
+"
   local var="$*"
   # remove leading whitespace characters
   var="${var#"${var%%[![:space:]]*}"}"
@@ -31,6 +43,10 @@ function trim() {
 }
 
 function trim_empty_lines() {
+  : "
+Trim only the empty lines of a text.
+USAGE: trim_empty_lines [text]
+"
   local value="$1"
   if [[ "$OSTYPE" == "darwin"* ]]; then
     printf "%s" "$1"
@@ -40,12 +56,20 @@ function trim_empty_lines() {
 }
 
 function create_random_string() {
+  : "
+Create a random string value. (ubuntu)
+USAGE: create_random_string [count]
+"
   local count="$1"
   : ${count:=5}
   cat /dev/urandom | env LC_CTYPE=C tr -dc a-z0-9 | head -c $count
 }
 
 function multi_print() {
+  : "
+Duplicate a text n times.
+USAGE: multi_print [text] [count]
+"
   local text="$1"
   local count="$2"
 
@@ -60,6 +84,10 @@ function multi_print() {
 }
 
 function indent() {
+  : "
+Indent a multiline text by n chars forward.
+USAGE: indent [text] [count] [symbol=\" \"]
+"
   local text="$1"
   local count="$2"
   local symbol="$3"

@@ -25,8 +25,6 @@ fi
 
 # methods
 
-[TO BE COMPLETED]
-
 # Licence
 
 Copyright ©
