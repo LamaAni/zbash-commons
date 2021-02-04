@@ -2,15 +2,18 @@
 
 A common bash library that adds loging, regex and other usefull commands to bash
 
-# To install 
+## BETA
+
+# To install
 
 ```shell
-curl -Ls "https://raw.githubusercontent.com/LamaAni/zbash-commons/master/install?ts_$(date +%s)=read" | sudo bash
+curl -Ls "https://raw.githubusercontent.com/LamaAni/zbash-commons/master/install?ts_$(date +%s)=$RANDOM" | sudo bash
 ```
 
 # To use in a script
 
 At the head of your script add,
+
 ```shell
 #!/bin/bash
 source zbash_commons
@@ -19,6 +22,10 @@ if [ $? -ne 0 ]; then
 fi
 
 ```
+
+# methods
+
+[TO BE COMPLETED]
 
 # Licence
 
