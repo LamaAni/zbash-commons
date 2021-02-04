@@ -36,7 +36,7 @@ jobs:
           ZBASH_COMMONS_OUTPUT: "zbash_commons.sh"
 
       - name: "Release: Upload files"
-        if: ${{steps.args.outputs.is_release}}
+        if: ${{ steps.args.outputs.is_release==true }}
         uses: AButler/upload-release-assets@v2.0
         with:
           files: "zbash_commons.sh"
