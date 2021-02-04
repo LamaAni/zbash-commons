@@ -44,5 +44,5 @@ jobs:
         uses: AButler/upload-release-assets@v2.0
         with:
           files: "zbash_commons.sh"
-          release-tag: "${{steps.args.outputs.ref_name}}"
+          release-tag: "${{steps.args.outputs.version}}"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
