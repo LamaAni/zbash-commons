@@ -1,5 +1,8 @@
 #!/bin/bash
 : "${LOG_DISPLAY_DATE_TIME="%Y-%m-%dT%H:%M:%S%z"}"
+: "${LOG_LEVEL:="INFO"}"
+: "${LOG_DISPLAY_PREFIX_PAD="5"}"
+
 function log_core() {
   local prefix="$1"
   shift
@@ -12,14 +15,92 @@ function log_core() {
   echo "${prefix}" "$@"
 }
 
+function format_level_prefix() {
+  local prefix="$1"
+  local color="$2"
+
+}
+
+function log_level_name_to_number() {
+  case "$1" in
+  0 | TRACE)
+    return 0
+    ;;
+  1 | DEBUG)
+    return 1
+    ;;
+  2 | INFO)
+    return 2
+    ;;
+  3 | WARN | WARNING)
+    return 3
+    ;;
+  4 | ERROR)
+    return 4
+    ;;
+  5 | CRITICAL)
+    return 5
+    ;;
+  esac
+
+  return 2
+}
+
+function log_with_level() {
+  local level="$1"
+  shift
+
+  log_level_name_to_number "$LOG_LEVEL"
+  local display_log_level="$?"
+
+  log_level_name_to_number "$level"
+  level=$?
+
+  local color="$gray"
+  local prefix="UNKNOWN"
+  case "$level" in
+  0)
+    prefix="TRACE"
+    color="$dark_gray"
+    ;;
+  1)
+    prefix="DEBUG"
+    color="$light_blue"
+    ;;
+  2)
+    prefix="INFO"
+    color="$green"
+    ;;
+  3)
+    prefix="WARN"
+    color="$yellow"
+    ;;
+  4)
+    prefix="ERROR"
+    color="$red"
+    ;;
+  5)
+    prefix="CRITICAL"
+    color="$magenta"
+    ;;
+  esac
+
+  if [ $display_log_level -gt $level ]; then
+    return 0
+  fi
+
+  prefix="${color}$(printf "%${LOG_DISPLAY_PREFIX_PAD}s" "$prefix")${end_color}"
+  log_core "$prefix" "$@"
+}
+
 # ------------------
 
 function assert() {
   local err="$1"
   shift
-  : ${err:=0}
+  : "${err:=0}"
   if [ "$err" -ne 0 ]; then
-    log_core "${red}ERROR${end_color}" "$@" 1>&2
+    log:error "$@"
     return $err
   fi
 }
@@ -27,9 +108,9 @@ function assert() {
 function assert_warning() {
   local err="$1"
   shift
-  : ${err:=0}
+  : "${err:=0}"
   if [ "$err" -ne 0 ]; then
-    log_core "${yellow}WARNING${end_color}" "$@" 1>&2
+    log:warn "$@"
     return $err
   fi
 }
@@ -44,25 +125,34 @@ function warn() {
 export LINE_SEPARATOR='------------------------------------'
 
 function log:info() {
-  log_core "${green}INFO${end_color}" "$@"
+  log_with_level "INFO" "$@"
 }
 
 function log:warn() {
-  log_core "${yellow}WARNING${end_color}" "$@"
+  log_with_level "WARN" "$@"
 }
 
 function log:error() {
-  log_core "${red}ERROR${end_color}" "$@"
+  log_with_level "ERROR" "$@"
 }
 
 function log:trace() {
-  log_core "${magenta}TRACE${end_color}" "$@"
+  log_with_level "TRACE" "$@"
+}
+
+function log:debug() {
+  log_with_level "DEBUG" "$@"
+}
+
+function log:critical() {
+  log_with_level "CRITICAL" "$@"
 }
 
 function log() {
   log:info "$@"
 }
 
+# (DEPRECATED)
 function log:warning() {
   log:warn "$@"
 }

@@ -8,6 +8,7 @@ export cyan=$'\e[0;36m'
 export light_blue=$'\e[0;94m'
 export deep_green=$'\e[0;32m'
 export dark_magenta=$'\e[0;35m'
+export dark_gray=$'\e[0;90m'
 export light_=$'\e[1;31m'
 export end_color=$'\e[0m'
 export ec="$end_color"

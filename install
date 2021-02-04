@@ -62,6 +62,7 @@ function install() {
   assert $? "Failed to download zbash_commons compiled script" || return $?
 
   source "$ZBASH_COMMONS_TEMP_PATH"
+  assert $? "Failed to load zbash_commons script, error in script?" || return $?
 
   log:sep "Installing zbash-commons as $(whoami)"
   log "Checking required premissions"
@@ -74,6 +75,16 @@ function install() {
       assert 2 "Sudo found, please rerun as root" || return $?
     fi
   fi
+
+  if [ -f "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" ]; then
+    rm -rf "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
+    assert $? "Failed to remove old code" || return $?
+  fi
+
+  log "Downloading.."
+
+  cat "$ZBASH_COMMONS_TEMP_PATH" >"$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION" && chmod +x "$ZBASH_COMMONS_SOURCE_COMMAND_LOCATION"
+  log "Installed OK -> $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION ($(wc -l $ZBASH_COMMONS_SOURCE_COMMAND_LOCATION) lines)"
 }
 
 function cleanup() {
@@ -85,6 +96,18 @@ function cleanup() {
 
 install
 cleanup $? "Failed to install" || exit $?
+
+echo '
+
+Library installed. To use, add the following at the head of your script,
+
+#!/bin/bash
+source zbash_commons
+if [ $? -ne 0 ]; then
+  echo "zbash_commons not found. Please see: https://github.com/LamaAni/zbash-commons"
+fi
+
+'
 
 # type realapth >/dev/null 2>&1
 # if [ $? -eq 0 ]; then
