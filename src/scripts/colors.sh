@@ -1,17 +1,20 @@
 #!/bin/bash
-export red=$'\e[0;31m'
-export green=$'\e[0;32m'
-export yellow=$'\e[0;33m'
-export blue=$'\e[0;34m'
-export magenta=$'\e[0;35m'
-export cyan=$'\e[0;36m'
-export light_blue=$'\e[0;94m'
-export deep_green=$'\e[0;32m'
-export dark_magenta=$'\e[0;35m'
-export dark_gray=$'\e[0;90m'
-export light_=$'\e[1;31m'
-export end_color=$'\e[0m'
-export ec="$end_color"
+: "${NO_COLORS:="false"}"
+if [ "$NO_COLORS" != "true" ]; then
+  export red=$'\e[0;31m'
+  export green=$'\e[0;32m'
+  export yellow=$'\e[0;33m'
+  export blue=$'\e[0;34m'
+  export magenta=$'\e[0;35m'
+  export cyan=$'\e[0;36m'
+  export light_blue=$'\e[0;94m'
+  export deep_green=$'\e[0;32m'
+  export dark_magenta=$'\e[0;35m'
+  export dark_gray=$'\e[0;90m'
+  export light_=$'\e[1;31m'
+  export end_color=$'\e[0m'
+  export ec="$end_color"
+fi
 
 function paint() {
   local color="$1"
