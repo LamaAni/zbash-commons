@@ -23,6 +23,14 @@ fi
 
 ```
 
+# envs
+
+name | Description | Default value
+---|---|---
+LOG_LEVEL | The log level (TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL) | INFO
+LOG_DISPLAY_DATE_TIME | the date time format to display | %Y-%m-%dT%H:%M:%S%z
+NO_COLORS | Do not display colors | false
+
 # methods
 Name | Description | Usage
 --- | --- | ---
