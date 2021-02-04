@@ -49,13 +49,14 @@ done
 
 # ------------------
 
-GET_SCRIPT_TEMP_PATH="$(mktemp)"
-ZBASH_COMMONS_TEMP_PATH="$(mktemp)"
+GET_SCRIPT_TEMP_PATH="$(mktemp /tmp/get-zbash-commons-script-XXXX.sh)"
+ZBASH_COMMONS_TEMP_PATH="$(mktemp /tmp/zbash-commpns-script-XXXX.sh)"
 
 function install() {
   curl -sL "https://raw.githubusercontent.com/LamaAni/zbash-commons/$ZBASH_COMMONS_VERSION/get" >"$GET_SCRIPT_TEMP_PATH"
   assert $? "Failed to download script getter" || return $?
-  "$GET_SCRIPT_TEMP_PATH" "$ZBASH_COMMONS_VERSION" >"$ZBASH_COMMONS_TEMP_PATH"
+  cat "$GET_SCRIPT_TEMP_PATH"
+  bash "$GET_SCRIPT_TEMP_PATH" -s -- "$ZBASH_COMMONS_VERSION" >"$ZBASH_COMMONS_TEMP_PATH"
   assert $? "Failed to download zbash_commons compiled script" || return $?
 
   source "$ZBASH_COMMONS_TEMP_PATH"
@@ -75,13 +76,13 @@ function install() {
 
 function cleanup() {
   local code=$?
-  rm -rf "$GET_SCRIPT_TEMP_PATH"
-  rm -rf "$ZBASH_COMMONS_TEMP_PATH"
+  # rm -rf "$GET_SCRIPT_TEMP_PATH"
+  # rm -rf "$ZBASH_COMMONS_TEMP_PATH"
   assert "$@" || return $?
 }
 
 install
-cleanup $? || exit $?
+cleanup $? "Failed to install" || exit $?
 
 # type realapth >/dev/null 2>&1
 # if [ $? -eq 0 ]; then
@@ -128,6 +129,5 @@ cleanup $? || exit $?
 # if [ $? -ne 0 ]; then
 #   echo "zbash_commons not found. Please see: https://github.com/LamaAni/zbash-commons"
 # fi
-
 
 # '

@@ -9,4 +9,4 @@ if [ -n "$VERSION" ]; then
 fi
 
 ZBASH_COMMONS_SCRIPT="$(curl -sL "$URL")"
-printf "$ZBASH_COMMONS_SCRIPT"
+printf "%s" "$ZBASH_COMMONS_SCRIPT"
