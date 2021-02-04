@@ -1,0 +1,12 @@
+#!/bin/bash
+# https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh
+# https://github.com/LamaAni/zbash-commons/releases/download/[VERSION]/zbash_commons.sh
+VERSION="$1"
+URL="https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh"
+
+if [ -n "$VERSION" ]; then
+    URL="https://github.com/LamaAni/zbash-commons/releases/download/$VERSION/zbash_commons.sh"
+fi
+
+ZBASH_COMMONS_SCRIPT="$(curl -sL "$URL")"
+printf "$ZBASH_COMMONS_SCRIPT"
