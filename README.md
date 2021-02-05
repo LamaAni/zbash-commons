@@ -15,7 +15,6 @@ curl -Ls "https://raw.githubusercontent.com/LamaAni/zbash-commons/master/install
 At the head of your script add,
 
 ```shell
-#!/bin/bash
 source zbash_commons
 if [ $? -ne 0 ]; then
   echo "zbash_commons not found. Please see: https://github.com/LamaAni/zbash-commons"
@@ -23,6 +22,21 @@ fi
 
 ```
 
+# To use in a temp script, or install script
+
+### NOTE: requires internet connection
+
+At the head of your script
+
+```shell
+type zbash_commons &>/dev/null
+if [ $? -ne 0 ]; then
+  echo "[DOWNLOAD] Downloading zbash_commons from latest release.."
+  eval "$(eval "$(curl -Ls "https://raw.githubusercontent.com/LamaAni/zbash-commons/master/get?ts_$(date +%s)=$RANDOM")")"
+else
+  source zbash_commons
+fi
+```
 # envs
 
 name | Description | Default value
