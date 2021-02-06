@@ -104,6 +104,10 @@ USAGE: indent [text] [count] [symbol=\" \"]
 }
 
 function split() {
+  : "
+Split a string by an seperator (multuichar)
+USAGE: split [sep] [text...]
+"
   local by="$1"
   for text in "$@"; do
     while [ -n "$text" ]; do

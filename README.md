@@ -92,6 +92,7 @@ trim_empty_lines | Trim only the empty lines of a text. | trim_empty_lines [text
 create_random_string | Create a random string value. (ubuntu) | create_random_string [count]
 multi_print | Duplicate a text n times. | multi_print [text] [count]
 indent | Indent a multiline text by n chars forward. | indent [text] [count] [symbol=' ']
+split | Split a string by an seperator (multuichar) | split [sep] [text...]
 # Licence
 
 Copyright ©
