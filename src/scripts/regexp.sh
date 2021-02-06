@@ -40,7 +40,7 @@ function parse_regex_flags_from_pattern() {
 
 function replace_value_in_text() {
   : "
-Does a simple text replace (all values).
+Does a simple text replace (all values i.e. /g).
 USAGE: regexp_replace [value] [replace_with] [texts..]
 "
   local value="$1"
@@ -80,7 +80,7 @@ USAGE: regexp_replace [value] [replace_with] [texts..]
 
 function regexp_replace() {
   : "
-Does a regex replace. If a group is defined, will replace only the groups.
+Does a regex replacve using bash native commands. flags can be [g,m,i]
 USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
 "
 
@@ -161,7 +161,7 @@ USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
 
 function regexp_match() {
   : "
-Does a regex match using grep
+Does a regex match using bash native commands. flags can be [g,m,i]
 USAGE: regexp_match /[regex]/[flags] [vals ...]
 "
   local regex="$1"

@@ -82,8 +82,9 @@ validate_arg | Validates a value is not empty (with trim) | validate_arg [value]
 is_chromeos | True if chromeos | is_chromeos
 is_wsl | True if wsl | is_wsl
 get_os_release | Exports the os release into envs: OS_NAME, OS_VERSION, OS_VERSION_CODENAME. Returns the os_name | get_os_release
-regexp_replace | Does a regex replace. (May use python or nodejs if found) | regexp_replace [regex] [replace_with] [value] [is_singleline==false]
-regexp_match | Does a regex match using grep | regexp_match [regex] [vals ...]
+replace_value_in_text | Does a simple text replace (all values i.e. /g). | regexp_replace [value] [replace_with] [texts..]
+regexp_replace | Does a regex replacve using bash native commands. flags can be [g,m,i] | regexp_replace /[regex]/[flags] [replace_with] [texts..]
+regexp_match | Does a regex match using bash native commands. flags can be [g,m,i] | regexp_match /[regex]/[flags] [vals ...]
 replace_with_env | Replaces values inside a text with matching env valus (similar to python format), e.g. '{{ENV}}' -> 'Env_val' | replace_with_env [text]
 to_lowercase | Makes a text lowercase | to_lowercase [text]
 trim | Trim a text | trim [text]
