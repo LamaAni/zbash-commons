@@ -32,12 +32,13 @@ Color a text using a regular expression
 USAGE: colorize [text] [regex] [color] [default color=\e[0m]
 "
   local value="$1"
-  local re="$2"
+  local regex="$2"
   local color_val="$3"
   local color_regular="$4"
-  : ${color_regular:="\e[0m"}
+
+  : ${color_regular:="$ec"}
 
   local to_print=""
-  to_print="$(regexp_replace "($re)" "$color_val\$1${color_regular}" "$value")"
+  to_print="$(regexp_replace "$regex" "$color_val\$0${color_regular}" "$value")"
   echo "$to_print"
 }

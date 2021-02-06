@@ -102,3 +102,21 @@ USAGE: indent [text] [count] [symbol=\" \"]
 
   regexp_replace "^" "$replace_with" "$text"
 }
+
+function split() {
+  local by="$1"
+  for text in "$@"; do
+    while [ -n "$text" ]; do
+      if [[ "$text" != *"$by"* ]]; then
+        echo "$text"
+        break
+      fi
+      before="${text%%"$by"*}"
+      after="${text#*"$by"}"
+      if [ -n "$before" ]; then
+        echo "$before"
+      fi
+      text="$after"
+    done
+  done
+}

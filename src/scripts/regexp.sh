@@ -1,57 +1,207 @@
 #!/bin/bash
+
+function parse_regex_from_pattern() {
+  local regex="$1"
+  local flags=""
+  local end_marker="--a-custom-marker-for-end-@%^^%^%"
+
+  if [[ "$regex" != "/"* ]]; then
+    printf "%s" "$regex"
+    return 0
+  fi
+
+  flags="/$(parse_regex_flags_from_pattern "$regex")"
+
+  # extract header
+  regex="${regex#*"/"}"
+
+  # remove flags
+  regex="${regex}${end_marker}"
+  regex="${regex//$flags$end_marker/}"
+  echo "$regex"
+}
+
+function parse_regex_flags_from_pattern() {
+  local regex="$1"
+  local flags=""
+  if [[ "$regex" != "/"* ]]; then
+    printf "%s" ""
+    printf "%s" "$regex"
+  fi
+  # extract header
+  regex="${regex#*"/"}"
+
+  # extract flags
+  [[ "$regex" =~ \/[a-z]+$ ]]
+  flags="${BASH_REMATCH[0]}"
+  flags="${flags/[^a-z]/}"
+  printf "%s" "$flags"
+}
+
+function replace_value_in_text() {
+  : "
+Does a simple text replace (all values).
+USAGE: regexp_replace [value] [replace_with] [texts..]
+"
+  local value="$1"
+  shift
+  local replace_with="$1"
+  shift
+  local rslt=""
+  local printed=""
+  local before=""
+  local after=""
+
+  [ -n "$value" ]
+  assert $? "Value must be defined" || return $?
+
+  for text in "$@"; do
+    rslt=()
+    while [ -n "$text" ]; do
+      if [[ "$text" != *"$value"* ]]; then
+        rslt+=("$text")
+        break
+      fi
+      before="${text%%"$value"*}"
+      after="${text#*"$value"}"
+      if [ -n "$before" ]; then
+        rslt+=("$before")
+      fi
+      rslt+=("$replace_with")
+      text="$after"
+    done
+    printed=""
+    for r in "${rslt[@]}"; do
+      printed="$printed$r"
+    done
+    echo "$printed"
+  done
+}
+
 function regexp_replace() {
   : "
-Does a regex replace. (May use python or nodejs if found)
-USAGE: regexp_replace [regex] [replace_with] [value] [is_singleline==false]
+Does a regex replace. If a group is defined, will replace only the groups.
+USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
 "
-  type "node" &>>/dev/null
-  local dose_not_have_node=$?
-  type "python3" &>>/dev/null
-  local dose_not_have_pyhton3=$?
 
   local regex="$1"
-  local replace_with="$2"
-  local value="$3"
-  local singleline="$4"
+  local regex_flags="$(parse_regex_flags_from_pattern $regex)"
+  local regex="$(parse_regex_from_pattern $regex)"
 
-  if [ $dose_not_have_node -eq 0 ]; then
-    local flags="gm"
-    if [ "$singleline" == "true" ]; then flags="gs"; fi
-    local script="
-        const regex=/$regex/$flags
-        const replace=process.argv[1]
-        const str=process.argv[2]
-        const replaced=str.replace(regex,replace)
-        console.log(replaced)
-      "
-    node -e "$script" "$replace_with" "$value"
+  local is_global=0
+  local is_multiline=1
 
-  elif [ $dose_not_have_pyhton3 -eq 0 ]; then
-    local flags=""
-    if [ "$singleline" == "true" ]; then flags=", flags=re.S"; fi
-    local script="
-import sys
-import re
-regex=r'$regex'
-replace=sys.argv[1].replace('%','\\%').replace('$','\\\\')
-value=sys.argv[2]
-print(re.sub(regex, replace, value$flags))
-"
-    python3 -c "$script" "$replace_with" "$value"
-  else
-    assert 1 "For advanced regex replace, either NodeJS or python3 must be installed." || return $?
-  fi
+  if [[ "$regex_flags" == *"m"* ]]; then is_multiline=1; fi
+  if [[ "$regex_flags" == *"g"* ]]; then is_global=1; fi
+  if [[ "$regex_flags" == *"i"* ]]; then is_multiline=0; fi
+
+  shift
+  local replace_with="$1"
+  shift
+
+  [ -n "$regex" ]
+  assert "$?" "You must provide a regular expression"
+
+  function __regexp_replace__internal_replace_in_text() {
+    local text="$1"
+    local rslt=()
+    local groups_count=""
+    local match=""
+    local match_groups=""
+    local before=""
+    local after=""
+    local replace_groups=()
+
+    while true; do
+      if [[ "$text" =~ $regex ]]; then
+        match_groups=("${BASH_REMATCH[@]}")
+        match="${match_groups[0]}"
+      else
+        rslt+=("$text")
+        break
+      fi
+
+      groups_count="${#match_groups[@]}"
+      groups_count=$((groups_count - 1))
+
+      replaces_match="$replace_with"
+      replace_groups=($(seq 0 $groups_count))
+      for i in "${replace_groups[@]}"; do
+        replaces_match="$(replace_value_in_text "\$$i" "${match_groups[i]}" "$replaces_match")"
+      done
+
+      before="${text%%"$match"*}"
+      after="${text#*"$match"}"
+      if [ -n "$before" ]; then
+        rslt+=("$before")
+      fi
+      rslt+=("$replaces_match")
+      text="$after"
+    done
+
+    for r in "${rslt[@]}"; do
+      printf "%s" "$r"
+    done
+  }
+
+  local text=""
+  local current=()
+  while [ "$#" -gt 0 ]; do
+    current=("$1")
+    if [ $is_multiline -eq 0 ]; then
+      IFS=$'\n' current=($(split $'\n' "$1"))
+    fi
+    for text in "${current[@]}"; do
+      text="$(__regexp_replace__internal_replace_in_text "$text")"
+      echo "$text"
+    done
+    shift
+  done
 }
 
 function regexp_match() {
   : "
 Does a regex match using grep
-USAGE: regexp_match [regex] [vals ...]
+USAGE: regexp_match /[regex]/[flags] [vals ...]
 "
   local regex="$1"
+  local sep=""
+  local before=""
+  local after=""
+  local current=""
+
+  local regex_flags="$(parse_regex_flags_from_pattern $regex)"
+  local regex="$(parse_regex_from_pattern $regex)"
+
+  local is_global=0
+  local is_multiline=1
+
+  if [[ "$regex_flags" == *"m"* ]]; then is_multiline=1; fi
+  if [[ "$regex_flags" == *"g"* ]]; then is_global=1; fi
+  if [[ "$regex_flags" == *"i"* ]]; then is_multiline=0; fi
+  [ -n "$regex" ]
+  assert "$?" "You must provide a regular expression"
+
   shift
   while [ "$#" -gt 0 ]; do
-    echo "$1" | grep -Eo "$regex"
+    current=("$1")
+    if [ $is_multiline -eq 0 ]; then
+      IFS=$'\n' current=($(split $'\n' "$current"))
+    fi
+    for text in "${current[@]}"; do
+      while [ -n "$text" ] && [[ "${text}" =~ ${regex} ]]; do
+        # trim off the portion already matched
+        sep="${BASH_REMATCH[0]}"
+        before="${text%%"$sep"*}"
+        after="${text#*"$sep"}"
+        text="$after"
+
+        echo "${BASH_REMATCH[@]}"
+        if [ $is_global -ne 1 ]; then
+          break
+        fi
+      done
+    done
     shift
   done
 }
