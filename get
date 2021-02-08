@@ -1,14 +1,20 @@
 #!/bin/bash
-# https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh
-# https://github.com/LamaAni/zbash-commons/releases/download/[VERSION]/zbash_commons.sh
 VERSION="$1"
 : "${VERSION:="latest"}"
 
-URL="https://github.com/LamaAni/zbash-commons/releases/latest/download/zbash_commons.sh?v_$(date +"%S")=$RANDOM"
+REPO_RAW_URL="https://github.com/LamaAni/zbash-commons"
 
 if [ "$VERSION" != "latest" ]; then
-    URL="https://github.com/LamaAni/zbash-commons/releases/download/$VERSION/zbash_commons.sh?v_$(date +"%S")=$RANDOM"
+    URL="$REPO_RAW_URL/releases/download/$VERSION"
+else
+    URL="$REPO_RAW_URL/releases/latest/download"
 fi
 
-ZBASH_COMMONS_SCRIPT="$(curl -sL "$URL")"
-printf "%s" "$ZBASH_COMMONS_SCRIPT"
+URL="$URL/zbash_commons.sh?v_$(date +"%S")=$RANDOM"
+
+SCRIPT="$(curl -sL "$URL")"
+if [ "$SCRIPT" == "Not Found" ]; then
+    echo 1>&2 "Cloud not find script @ $URL"
+    exit 1
+fi
+printf "%s" "$SCRIPT"
