@@ -45,6 +45,8 @@ name | Description | Default value
 ---|---|---
 LOG_LEVEL | The log level (TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL) | INFO
 LOG_DISPLAY_DATE_TIME | the date time format to display | %Y-%m-%dT%H:%M:%S%z
+LOG_DISPLAY_EXTRA | Extra information to display in the (before the level) | empty
+LOG_DISPLAY_PREFIX_PAD | The size of the padding for log level| 5
 NO_COLORS | Do not display colors | false
 
 # methods
