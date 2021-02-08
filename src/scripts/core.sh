@@ -10,12 +10,13 @@ function log_core() {
   if [ -n "$prefix" ]; then
     prefix="[$prefix]"
   fi
+  if [ -n "$LOG_DISPLAY_EXTRA" ]; then
+    prefix="[$LOG_DISPLAY_EXTRA]${prefix}"
+  fi
   if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
     prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]${prefix}"
   fi
-  if [ -n "$LOG_DISPLAY_EXTRA" ]; then
-    prefix="${prefix}[$LOG_DISPLAY_EXTRA]"
-  fi
+
   echo "${prefix}" "$@"
 }
 
