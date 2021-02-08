@@ -2,6 +2,7 @@
 : "${LOG_DISPLAY_DATE_TIME="%Y-%m-%dT%H:%M:%S%z"}"
 : "${LOG_LEVEL:="INFO"}"
 : "${LOG_DISPLAY_PREFIX_PAD="5"}"
+: "${LOG_DISPLAY_EXTRA=""}"
 
 function log_core() {
   local prefix="$1"
@@ -10,7 +11,10 @@ function log_core() {
     prefix="[$prefix]"
   fi
   if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
-    prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]$prefix"
+    prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]${prefix}"
+  fi
+  if [ -n "$LOG_DISPLAY_EXTRA" ]; then
+    prefix="${prefix}[$LOG_DISPLAY_EXTRA]"
   fi
   echo "${prefix}" "$@"
 }
