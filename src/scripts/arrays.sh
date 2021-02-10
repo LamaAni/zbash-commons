@@ -11,7 +11,7 @@ USAGE: join_by [sep] [values..]
     joined="$joined$1$sep"
     shift
   done
-  joined="$joined$1$sep"
+  joined="$joined$1"
   printf "%s" "$joined"
 }
 
