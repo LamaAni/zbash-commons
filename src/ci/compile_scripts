@@ -4,8 +4,8 @@
 # Loading the compile scripts
 source "$ZBASH_COMMONS_SRC_PATH/load"
 
-: "${ZBASH_COMMONS_OUTPUT="$1"}"
-: "${ZBASH_COMMONS_OUTPUT="$(mktemp /tmp/zbash-commons-compiled-XXXXXXX.sh)"}"
+: "${ZBASH_COMMONS_OUTPUT:="$1"}"
+: "${ZBASH_COMMONS_OUTPUT:="$(make_temp_path /tmp/zbash-commons-compiled-XXXXXXX.sh)"}"
 log:sep "Compiling sources to $ZBASH_COMMONS_OUTPUT"
 
 function compile_scripts() {

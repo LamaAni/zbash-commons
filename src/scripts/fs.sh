@@ -14,26 +14,5 @@ function make_temp_path() {
         rslt="$(regexp_replace "/$x_ph/" "$rstr" "$rslt")"
     done
 
-    echo "$rslt"
-
-    # pattern="$(regexp_replace "/[X]+/g" "\$0"$'\n' "$pattern")"
-    # IFS=$'\n' lines=($pattern)
-    # local loc=0
-    # local rslt=""
-    # local part=""
-
-    # # echo "${lines[@]}"
-    # for ln in "${lines[@]}"; do
-    #     if [ -z "$ln" ]; then
-    #         continue
-    #     fi
-    #     local ptrn_part="$(regexp_replace "[^X]+" "" "$ln")"
-    #     local ptrn_rand="$(create_random_string "${#ptrn_part}")"
-    #     # echo "$ptrn_part $ptrn_rand"
-    #     part="$(replace_value_in_text "$ptrn_part" "$ptrn_rand" "$ln")"
-    #     rslt="$rslt$part"
-    #     loc=$((loc + 1))
-    #     # echo "--"
-    # done
-    # echo "$rslt"
+    printf "%s" "$rslt"
 }

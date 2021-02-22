@@ -49,7 +49,7 @@ done
 
 # ------------------
 
-ZBASH_COMMONS_TEMP_PATH="$(mktemp /tmp/zbash-commpns-script-XXXX.sh)"
+ZBASH_COMMONS_TEMP_PATH="$(make_temp_path /tmp/zbash-commpns-script-XXXX.sh)"
 
 function install() {
   URL_BRANCH="$ZBASH_COMMONS_VERSION"
