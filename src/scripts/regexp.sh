@@ -48,33 +48,30 @@ USAGE: regexp_replace [value] [replace_with] [texts..]
   local replace_with="$1"
   shift
   local rslt=""
-  local printed=""
+  # local printed=""
   local before=""
   local after=""
 
   [ -n "$value" ]
   assert $? "Value must be defined" || return $?
 
+  # local is_first=1
   for text in "$@"; do
-    rslt=()
-    while [ -n "$text" ]; do
+    rslt=""
+    while [ "${#text}" -ne 0 ]; do
       if [[ "$text" != *"$value"* ]]; then
-        rslt+=("$text")
+        rslt="$rslt$text"
         break
       fi
       before="${text%%"$value"*}"
       after="${text#*"$value"}"
       if [ -n "$before" ]; then
-        rslt+=("$before")
+        rslt="$rslt$before"
       fi
-      rslt+=("$replace_with")
+      rslt="$rslt$replace_with"
       text="$after"
     done
-    printed=""
-    for r in "${rslt[@]}"; do
-      printed="$printed$r"
-    done
-    echo "$printed"
+    printf "%s" "$rslt"
   done
 }
 
@@ -83,7 +80,7 @@ function regexp_replace() {
 Does a regex replacve using bash native commands. flags can be [g,m,i]
 USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
 "
-
+  
   local regex="$1"
   local regex_flags="$(parse_regex_flags_from_pattern $regex)"
   local regex="$(parse_regex_from_pattern $regex)"
@@ -111,6 +108,9 @@ USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
     local before=""
     local after=""
     local replace_groups=()
+    local i=0
+
+    
 
     while true; do
       if [[ "$text" =~ $regex ]]; then
@@ -127,7 +127,9 @@ USAGE: regexp_replace /[regex]/[flags] [replace_with] [texts..]
       replaces_match="$replace_with"
       replace_groups=($(seq 0 $groups_count))
       for i in "${replace_groups[@]}"; do
-        replaces_match="$(replace_value_in_text "\$$i" "${match_groups[i]}" "$replaces_match")"
+        replaces_match="$(replace_value_in_text '$'"$i" "${match_groups[i]}" "$replaces_match"; echo e)"
+        # ender is new line fix.
+        replaces_match="${replaces_match%?}"
       done
 
       before="${text%%"$match"*}"
