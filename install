@@ -49,7 +49,7 @@ done
 
 # ------------------
 
-: "${ZBASH_COMMONS_TEMP_PATH:="/tmp/zbash_commons.temp.download"}"
+: "${ZBASH_COMMONS_TEMP_PATH:="$/tmp/zbash_commons.temp.$RANDOM.download.sh"}"
 
 function install() {
   URL_BRANCH="$ZBASH_COMMONS_VERSION"
