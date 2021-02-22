@@ -14,6 +14,7 @@ function compile_scripts() {
     compiled+=("$(cat $file)")
     assert $? "Error while loading lib file: $file" || return $?
   done
+  compiled+=("export ZBASH_COMMONS_LIB_LOADED='true'")
   printf "%s" "$(join_by $'\n' "${compiled[@]}")"
 }
 
