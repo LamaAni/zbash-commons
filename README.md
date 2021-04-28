@@ -48,6 +48,7 @@ fi
 | LOG_DISPLAY_DATE_TIME  | the date time format to display                           | %Y-%m-%dT%H:%M:%S%z |
 | LOG_DISPLAY_EXTRA      | Extra information to display in the (before the level)    | empty               |
 | LOG_DISPLAY_PREFIX_PAD | The size of the padding for log level                     | 5                   |
+| LOG_TO_OUTPUT          | The output stream for the log (e.g. 1, 2, /dev/null)      | 1                   |
 | NO_COLORS              | Do not display colors                                     | false               |
 
 # methods
@@ -97,6 +98,7 @@ fi
 | multi_print                             | Duplicate a text n times.                                                                                     | multi_print [text] [count]                               |
 | indent                                  | Indent a multiline text by n chars forward.                                                                   | indent [text] [count] [symbol=' ']                       |
 | split                                   | Split a string by an seperator (multuichar)                                                                   | split [sep] [text...]                                    |
+| get_folder_md5                          | Calculates the md5 hash of fild/folder contents. (Dose not include file changed times)                        | get_folder_md5 [src]                                     |
 
 # Licence
 

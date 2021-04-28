@@ -3,6 +3,7 @@
 : "${LOG_LEVEL:="INFO"}"
 : "${LOG_DISPLAY_PREFIX_PAD="5"}"
 : "${LOG_DISPLAY_EXTRA=""}"
+: "${LOG_TO_OUTPUT="1"}"
 
 function log_core() {
   local prefix="$1"
@@ -17,7 +18,7 @@ function log_core() {
     prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]${prefix}"
   fi
 
-  echo "${prefix}" "$@"
+  echo "${prefix}" "$@" 1>&${LOG_TO_OUTPUT}
 }
 
 function log_level_name_to_number() {
