@@ -1,7 +1,8 @@
 #!/bin/bash
-CHECK_TYPE="$(type curla 2>&1)"
+CHECK_TYPE="$(type curl 2>&1)"
 if [ $? -ne 0 ]; then
   echo "Curl must be installed"
+  exit 1
 fi
 
 function assert() {
