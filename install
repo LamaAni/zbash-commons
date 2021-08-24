@@ -1,5 +1,5 @@
 #!/bin/bash
-type curl >&2
+type curl 1>&2
 if [ $? -ne 0 ]; then
   echo "Curl must be installed"
 fi
