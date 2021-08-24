@@ -1,5 +1,5 @@
 #!/bin/bash
-type curl 1>&2
+CHECK_TYPE="$(type curla 2>&1)"
 if [ $? -ne 0 ]; then
   echo "Curl must be installed"
 fi
