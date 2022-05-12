@@ -15,7 +15,7 @@ function log_core() {
     prefix="$LOG_DISPLAY_EXTRA${prefix}"
   fi
   if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
-    prefix="[$(date +"$LOG_DISPLAY_DATE_TIME")]${prefix}"
+    prefix="[${dark_gray}$(date +"$LOG_DISPLAY_DATE_TIME")${ec}]${prefix}"
   fi
 
   echo "${prefix}" "$@" 1>&${LOG_TO_OUTPUT}
