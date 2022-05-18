@@ -5,19 +5,7 @@
 : "${LOG_DISPLAY_EXTRA=""}"
 : "${LOG_TO_OUTPUT="1"}"
 
-function log_core() {
-  local prefix="$1"
-  shift
-  if [ -n "$prefix" ]; then
-    prefix="[$prefix]"
-  fi
-  if [ -n "$LOG_DISPLAY_EXTRA" ]; then
-    prefix="$LOG_DISPLAY_EXTRA${prefix}"
-  fi
-  if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
-    prefix="[${dark_gray}$(date +"$LOG_DISPLAY_DATE_TIME")${ec}]${prefix}"
-  fi
-
+function log_core_select_output() {
   case "$LOG_TO_OUTPUT" in
   1)
     echo "${prefix}" "$@"
@@ -35,6 +23,22 @@ function log_core() {
     echo "${prefix}" "$@" 1>${LOG_TO_OUTPUT}
     ;;
   esac
+}
+
+function log_core() {
+  local prefix="$1"
+  shift
+  if [ -n "$prefix" ]; then
+    prefix="[$prefix]"
+  fi
+  if [ -n "$LOG_DISPLAY_EXTRA" ]; then
+    prefix="$LOG_DISPLAY_EXTRA${prefix}"
+  fi
+  if [ -n "$LOG_DISPLAY_DATE_TIME" ]; then
+    prefix="[${dark_gray}$(date +"$LOG_DISPLAY_DATE_TIME")${ec}]${prefix}"
+  fi
+
+  log_core_select_output "$@"
 }
 
 function log_level_name_to_number() {
@@ -217,9 +221,9 @@ function log:sep() {
 Output a seperator for nicer logging. (Dose not have)
 USAGE: log:sep [message...]
 "
-  echo "$green$LINE_SEPARATOR$end_color"
+  log_core_select_output "$green$LINE_SEPARATOR$end_color"
   if [ "$#" -gt 0 ]; then
-    echo "${magenta}->${end_color}" "$@"
+    log_core_select_output "${magenta}->${end_color}" "$@"
   fi
 }
 
