@@ -18,7 +18,23 @@ function log_core() {
     prefix="[${dark_gray}$(date +"$LOG_DISPLAY_DATE_TIME")${ec}]${prefix}"
   fi
 
-  echo "${prefix}" "$@" 1>&${LOG_TO_OUTPUT}
+  case "$LOG_TO_OUTPUT" in
+  1)
+    echo "${prefix}" "$@"
+    ;;
+  2)
+    echo "${prefix}" "$@" 1>&2
+    ;;
+  3)
+    echo "${prefix}" "$@" 1>&3
+    ;;
+  4)
+    echo "${prefix}" "$@" 1>&4
+    ;;
+  *)
+    echo "${prefix}" "$@" 1>${LOG_TO_OUTPUT}
+    ;;
+  esac
 }
 
 function log_level_name_to_number() {
