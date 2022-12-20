@@ -4,23 +4,27 @@
 : "${LOG_DISPLAY_PREFIX_PAD="5"}"
 : "${LOG_DISPLAY_EXTRA=""}"
 : "${LOG_TO_OUTPUT="1"}"
+: "${LOG_DISPLAY_PREFIX_SPACER:=" "}"
 
 function log_core_select_output() {
+  local prefix="$1"
+  shift
+  printf "%s${LOG_DISPLAY_PREFIX_SPACER}" "${prefix}"
   case "$LOG_TO_OUTPUT" in
   1)
-    echo "${prefix}" "$@"
+    echo "$@"
     ;;
   2)
-    echo "${prefix}" "$@" 1>&2
+    echo "$@" 1>&2
     ;;
   3)
-    echo "${prefix}" "$@" 1>&3
+    echo "$@" 1>&3
     ;;
   4)
-    echo "${prefix}" "$@" 1>&4
+    echo "$@" 1>&4
     ;;
   *)
-    echo "${prefix}" "$@" 1>${LOG_TO_OUTPUT}
+    echo "$@" 1>${LOG_TO_OUTPUT}
     ;;
   esac
 }
@@ -38,7 +42,7 @@ function log_core() {
     prefix="[${dark_gray}$(date +"$LOG_DISPLAY_DATE_TIME")${ec}]${prefix}"
   fi
 
-  log_core_select_output "$@"
+  log_core_select_output "$prefix" "$@"
 }
 
 function log_level_name_to_number() {
