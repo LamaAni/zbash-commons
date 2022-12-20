@@ -4,27 +4,14 @@
 : "${LOG_DISPLAY_PREFIX_PAD="5"}"
 : "${LOG_DISPLAY_EXTRA=""}"
 : "${LOG_TO_OUTPUT="1"}"
-: "${LOG_DISPLAY_PREFIX_SPACER:=" "}"
 
 function log_core_select_output() {
-  local prefix="$1"
-  shift
-  printf "%s${LOG_DISPLAY_PREFIX_SPACER}" "${prefix}"
   case "$LOG_TO_OUTPUT" in
-  1)
-    echo "$@"
-    ;;
-  2)
-    echo "$@" 1>&2
-    ;;
-  3)
-    echo "$@" 1>&3
-    ;;
-  4)
-    echo "$@" 1>&4
+  '' | *[!0-9]*)
+    echo "$@" 1>>${LOG_TO_OUTPUT}
     ;;
   *)
-    echo "$@" 1>${LOG_TO_OUTPUT}
+    echo "$@" 1>&$LOG_TO_OUTPUT
     ;;
   esac
 }
